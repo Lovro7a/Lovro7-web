@@ -45,6 +45,13 @@
             border-radius: 5px;
             background-color: rgb(0, 136, 255);
         }
+        .okno{
+            border: 1px solid black;
+            padding: 0px;
+            display: inline-block;
+            border-radius: 5px;
+            padding-top: 0px;
+        }
         </style>
     
  
@@ -61,7 +68,7 @@
     <a href="projekti.html" target=_self title="projekti">
         Projekti> 
     </a>
-    <a href="arduino_krmiljenje_varilnega_aparata.html" target=_self title="krmiljenje varilnega aparata">
+    <a href="arduino_krmiljenje_varilnega_aparata.html" target=_self title="arduino krmiljenje varilnega aparata">
         Krmiljenje varilnega aparata
     </a>
     <hr>
@@ -99,6 +106,14 @@
             <a href="VARILNI APARAT-gerberji.zip" target="_blank" title="gerberji">
                 GERBERJI.grb
             </a>
+            <br>
+            <a href="pcb varilni aparat.pdf" target="_blank" title="Vezje">
+                VEZJE.pdf
+            </a>
+            <br>
+            <a href="pcb varilni aparat-komponente.pdf" target="_blank" title="razporeditev komponent">
+                KOMPONENTE.pdf
+            </a>
         </div>
     </div>
     <br>
@@ -112,8 +127,7 @@
     <br>
     <br>
     <p>
-        Imam star MIG/MAG varilni aparat, ki se je avgusta lani malo kopal. Po kakšnem mesecu dni sem zamenjal potenciometre in elektrolite na starem krmilnem vezju. Stvar pa je malo delovala in malo ne. Včasih se motor za pomik žice ni zagnal, hitrost pomika žice ni bila konstantna in ni je bilo mogoče dobro nastavljati. In tako sem prišel na idejo na bi naredil svoje krmiljenje.
-    </p>
+        Imam star MIG/MAG varilni aparat, ki se je avgusta 2023 malo kopal. Po kakšnem mesecu dni sem zamenjal potenciometre in elektrolite na starem krmilnem vezju. Stvar pa je malo delovala in malo ne. Včasih se motor za pomik žice ni zagnal, hitrost pomika žice ni bila konstantna in ni je bilo mogoče dobro nastavljati. Ta večer sem sedel za mojo nikoli pospravljeno pisalno mizo in si razbijal glavo: koji &/*§!@%&# zakaj ne dela? Nakar sem zagledal arduino. In tako je nastala ideja za novo krmiljenje.    </p>
     <br>
     <h2>Kakšne funkcije mora podpirati?</h2>
     -	Nastavljiva hitrost pomika žice,
@@ -129,6 +143,288 @@
     -	Max hitrost za vpeljevanje žice,
     <br>
     -	Možnost reprogramiranja.
+</div>
+<br>
+<br>
+<p>
+    Krmiljenje je narejeno za Gorenje Varstroj 140/160 Automig, vendar ga je možno priključiti na skoraj vse MIG/MAG aparate. Ti pa morajo biti na transformator, ker ni narejeno za inverterje. Aparat mora imeti transformator za napajanje z navitji 6V in še navitjem za motor, ki je po navadi 12V, lahko pa je tudi 24V. Načeloma lahko 6V napajanje priklopite tudi na 12V, vendar mora imeti regulator napetosti L7805 dovolj dobro hlajenje. Če motor deluje na napetosti 24V, morate uporabiti 24V releje in 24V priključiti na pin 12V. Prilagoditi morate tudi upora R7 in R8!
+</p>
+<br>
+<div class="okno">
+    <h5 >
+        Blok shema delovanja:
+    </h5>
+    <img src="blok shema vezja.png" width="450">
+</div>
+<div>
+    <br>
+    <h3>
+        12V napajanje:
+    </h3>
+    <p>
+        Tu ni kaj dosti za povedati. 12V iz transformatorja za napajanje pride na usmerniški mostič CR1. Med maso in 12V je gladilni kondenzator C3. Dodana je še 6A varovalka. Pred tranzistorjem Q1 je še ena varovalka 5.5A. Ta ni obvezna in lahko namesto nje uporabite kos žice.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        5V napajanje
+    </h3>
+    <p>
+        Iz transformatorja za napajanje pride 6v. Usmerniški mostiček je priklopljen med 0V (GND AC) in 6V. Zraven je še vezan gladilni kondenzator C4. Za stabilno delovanje regulatorja napetosti IC1 tipa L7805 pa je vzporedno C4 vezan kondenzator C2. Na izhodu regulatorja je C1, ki tudi skrbi zato da regulator ne zaoscilira.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        Nastavljanje časovih vrednosti
+    </h3>
+    <p>
+        Potenciometri R2, R3, R4, R5 so povezani med maso in 5V. Izhodi pa so povezani na analogne vhode mikrokrmilnika. Ostali analogni vhodi so speljani na konektor EXTRA.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        Ojačanje za rele plina in transformatorja
+    </h3>
+    <p>
+        Da bi bilo vezje čim bolj univerzalno sem za vklop plina in transformatorja dodal releja. Ker ATmega328 ne more oddati dovolj toka na izhodih sem dodal še NPN tranzistorja BC547B. Ustreza skoraj vsak NPN tranzistor, mora pa imeti Ic večji od 0,1A. Med izhodom mikrokrmilnika in bazo tranzistorja sta upora R7 in R8. Kolektorja tranzistorjev sta vezana na A2 relejev K1 in K2. Med A1 in A2 na relejih sta vezani diodi D1 in D2. Ti služita zaščiti tranzistorjev saj se ob podrtju magnetnega polja v tuljavi relejev inducira napetost, ki je lahko nekaj sto voltov. Ta lahko uniči tranzistor.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        PWM regulacija hitrosti motorja
+    </h3>
+    <p>
+        Za regulacijo hitrosti motorja sem izbral PWM- pulz width modulation. Lahko bi jo naredil tudi z mikrokrmilnikom ampak potrebujem čim več prostora v njegovem spominu. Zato sem izbral NE555. Frekvenca, na kateri deluje PWM je okoli 38kHz. Frekvenca se spreminja z vrednostjo kondenzatorja  C6. Širina pulza se nastavlja na potenciometru R1.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        Kontrola in ojačanje za motor
+    </h3>
+    <div class="okno">
+        <h5>
+            PWM signal na osciloskopu
+            <br>
+            zograj: invertiran Vce tranzistorja Q1 (5V/div)
+            <br>
+            spodaj: Ve-gnd tranzistorja Q2 (2V/div)
+        </h5>
+        <img src="pwm-osciloskop.jpg" width="450">
+    </div>
+    <p>
+        Na kolektor tranzistorja Q2 pride PWM signal iz pina 3 na NE555. Na bazo pa pride signal za vklop motorja iz mikrokrmilnika. Vmes pa je upor R16, ki kontrolira tok čez tranzistor. Ta del ubistvu zmnoži signala. Na kolektor prihaja stalen PWM signal, ko pa mikrokrmilnik vklopi motor tranzistor ta signal spusti do drugega tranzistorja. Na emiter pa je priklopljena dioda D5 tipa 1N4148 in upor R13. Dioda je namenjena temu, da ko bo mikrokrmilnik spustil pulz za zagon motorja ne bo nastal kratek stik. Ta je priklopljena na bazo NPN tranzistorja Q1 tipa BDV65B. Na bazo je preko diode D6 in upora R18 priklopljen še I/0 pin mikrokrmilnika, za pulz, ki zažene motor. Tranzistor Q1 pa le ojača signal, da lahko krmili motor.                                                                                                                Upori so prilagojene za tok motorja do 5,5A. V primeru da imate drugačen upor jih je potrebno spremeniti. Med + in – pol motorja je vezana še dioda D7 tipa 1N5404 za zaščito tranzistorja.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        Krmiljenje
+    </h3>
+    <p>
+        Krmiljenje mora opravljati vse zgoraj navedene funkcije. Za krmiljenje sem izbral Atmelov ATmega328. Ta čip sem izbral ker sem hotel napisati program v ArduinoIDE. To pomeni da moram na čip naložiti bootloader. Tako krmiljenje deluje enako kot Arduino UNO. Da lahko čip deluje je potrebno dodati zunanji 16MHz oscilator. Med izhoda oscilatorja in maso pa je potrebno vezati kondenzatorja 22pF. Med pin 1 in 5V pa je potrebno dodati upor R18 vrednosti 10k. Na konektor PROG sta speljana RX in TX pina mikrokrmilnika, 3. pin pa je povezan na RESET (pin1). Če boste programirali brez bootloaderja je dodan konektor za ISP protokol.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        Tiskano vezje
+    </h3>
+    <p>
+        Vezje je dimenzij 165x127mm. Je enostransko in ga lahko brez problema naredite v domači delavnici. Zaradi lažje izdelave je debelina padov 50mil oziroma 1.27mm. Samo za ISP konektor so tanjše. Vse komponente se vstavi skozi zgornjo stran, spajka pa se jih na spodnji. To, da je vezje enostransko pa pride z ceno: potrebna je uporaba jumperjev. Za jumper lahko uporabite košček nogice od uporov, diod… Namesto upora R9 lahko uporabite žico, vendar mora biti ta dovolj debela saj bo čez njo tekel tok 5.5A. Na mestu, kjer so slike potenciometrov teh ne montiramo. Slike so za lažjo povezavo. POZOR: tranzistor Q1 je potrebno dobro hladiti.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <br>
+    <h2>
+        Koda
+        <hr>
+    </h2>
+</div>
+<div>
+    <br>
+    <h3>
+        Inicijalizacija pinov in spremenjivk
+    </h3>
+    <div class="okno" style="color: green;">
+        int i_motor;
+        <br>
+        int i_poPlin;
+        <br>
+        int i_predPlin;
+        <br>
+        int i_motor_tockovno;
+        <br>
+        int i_pulzno_zacetek;
+        <br>
+        <br>
+        const int motor = 13; 
+        <br>  
+        const int motorPulz = 12;
+        <br>
+        const int plin = 11;
+        <br>
+        const int trafo = 10;
+        <br>
+       const int stikalo = 9;
+       <br>
+       const int sPlin = 8;
+    </div>
+    <div class="okno" style="color: green;">
+        pinMode(motor, OUTPUT);
+        <br>
+        pinMode(motorPulz, OUTPUT);
+        <br>
+        pinMode(plin, OUTPUT);
+        <br>
+        pinMode(trafo, OUTPUT);
+        <br>
+        pinMode(stikalo, INPUT);
+        <br>
+        pinMode(sPlin, INPUT);
+        <br>
+        pinMode(sZica, INPUT);
+        <br>
+        pinMode(predPlin, INPUT);
+        <br>
+        pinMode(poPlin, INPUT);
+        <br>
+        pinMode(tockovno, INPUT);
+        <br>
+        pinMode(pulzno, INPUT);
+        <br>
+        Serial.begin(9600);
+    </div>
+
+    <p>
+        Če hočemo da bo mikrokrmilnik na izhodih ob pravem trenutku dal napetost in tok mu moramo povedati, za kaj bo uporabljal pine. V programu pa je potrebno tudi definirati konstante in spremenljivke. Const int motor = 13; pa pove mikrokrmilniku da se pin 13 imenuje motor. Če boste prepisovali program v C jeziku se določi pin tako: DDR[ime pina npr.:C7, B0] = 1/0;   1 pomeni izhod, 0 pa vhod.
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        A/D pretvornik in izračuni časovnih vrednosti
+    </h3>
+    <div class="okno" style="color: green;">
+        vStikalo = digitalRead(stikalo);
+        <br>
+        vPlin = digitalRead(sPlin);
+        <br>
+        vZica = digitalRead(sZica);
+        <br>
+        <br>
+        tockovnoV = analogRead(tockovno);
+        <br>
+        pulznoV = analogRead(pulzno);
+        <br>
+        <br>
+        vPredplin = (analogRead(predPlin)*15000.)/1024.;
+        <br>
+        vPoplin = (analogRead(poPlin)*30000.)/1024.;
+        <br>
+        vTockovno = (analogRead(tockovno)*30000.)/1024.;
+        <br>
+        vPulzno = (analogRead(pulzno)*40000.)/1024.;
+    </div>
+    <p>
+        Ta del kode se izvaja v void loop() Prvi del računa pove  mikrokrmilniku, da naj prebere analogno vrednost na dodočenih pinih. Te vrednosti so zapisane v obliki int. Drugi del kode pa uporablja križni račun da izračuna čase. Prebrano vrednost množi z maksimalnim nastavljenim časom. Zakaj pa so tako visoka števila? – zaradi tega, ker so v ms. Na koncu pa rezultat deli z 1024. Zakaj ravno to število? – Atmega328 ima vgrajen 10-bitni A/D pretvornik. Se pravi 
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        Zaporedja dogodkov
+    </h3>
+    <div class="okno" style="color: green;">
+        if(vStikalo == 1 && pulznoV <= 35 && tockovnoV <= 35){
+            <br>
+            digitalWrite(plin, HIGH);
+            <br>
+            i_predPlin++;
+            <br>
+            if(i_predPlin == 1){
+            <br>
+              delay(vPredplin);
+            <br>
+            }
+            <br>
+            digitalWrite(trafo, HIGH);
+            <br>
+          vklop_motorja();
+            <br>
+          i_poPlin = 0;
+          <br>
+           }
+           <br>
+           //////////////////NAVADNO IZKLOPLJENO/////////////////////
+           <br>
+           else if(vStikalo == 0 && pulznoV <= 10 && tockovnoV <= 35){
+            <br>
+            i_motor = 0;
+            <br>
+            i_predPlin = 0;
+            <br>
+            konec_varjenja();
+            <br>
+            izklop_varjenja();
+            <br>
+           }
+    </div>
+    <p>
+        Ta del kode sproža določene dogodke po točno določenem vrstnem redu. Program ve, da je v funkciji navadnega varjenja, ko sta vrednosti iz potenciometra za pulzno in točkovno varjenje 0. Dal sem malo tolerance zaradi šumov in nepopolnih potenciometrov. Ko je gumb (stikalo) zaprto najprej vklopi pretok plina. Nato vrednosti spremenljivke i_predPlin prišteje 1. Tako se izpolne 2. pogoj, ki pa vklopi zamik za čas predplina.  Tukaj je dobro uporabiti podatke tipa bool, saj ta zasede 1 bit spomina. Njegovi vrednosti pa sta true in false. Ta if je obvezen. V nasprotnem primeru bi bila funkcija delay() vklopljena vsakič ko bi procesor prišel na to vrstico. Funkcija delay() pa ustavi delovanje kode za določen čas. To pomeni da nebi niti zaznalo ko spustimo gumb.  Nato še vklopi transformator in preide v void »vklop_motorja()«. Ko tipko spustimo pa nastavi 3 spremenljivke na 0. Vse te 3 spremenljivke so ustvarjene z istim namenom. Za tem še preide v void »konec_varjenja()« in za njim še v »izklop_varjenja()«. Kasneje bote videla, zakaj so te spremenljivke pomembne
+    </p>
+</div>
+<div>
+    <br>
+    <br>
+    <h3>
+        Pred-definirani dogodki
+    </h3>
+    <div class="okno" style="color: green;">
+        void konec_varjenja() {
+            <br>
+            i_poPlin++;
+            <br>
+            digitalWrite(motor, LOW);
+            <br>
+            delay(100);
+            <br>
+            digitalWrite(trafo, LOW);
+            <br>
+            if(i_poPlin == 1){
+                <br>
+              delay(vPoplin);
+              <br>
+              digitalWrite(plin, LOW);
+              <br>
+              i_poPlin = 1;
+              <br>
+            }
+            <br>
+          }
+    </div>
+    <p>
+        Tukaj uporabljam funkcijo void (). Ko aktiviramo to funkcijo bo procesor preskočil na vse, kar je znotraj oglatih oklepajev. Ko konča bo nadaljeval izvajanje kode tam, kjer je preskočil na to funkcijo. Tam, kjer želimo aktivirati določen void napišemo ukaz:
+Void ime voida ();
+Kaj pomeni i_poPlin++; ? ko napišemo ime spremenljivke, folata… in na koncu dodamo ++ bo program vrednosti te spremenljivke prištel 1. vedno začne z 0 tudi če začetno število ni definirano. To se bo zgodilo vsakič ko procesor prebere to vrstico.
+Ta void se mora zgoditi, ko spustimo tipko na gorilniku. Najprej spremenljivki i_poPlin prišteje 1- to pomeni da je vrednost sedaj 1. Nato izklopi motor, malo počaka in izklopi še transformator. V naslednji vrstici program preveri ali je vrednost spremenljivke enaka 1. Če je bo ustavil izvajanje kode in ko mine nastavljen čas bo izklopil še plin. Naslednja vrstica pa je samo varovalka. Ko sem napisal 1. verzijo kode sem naletel na problem: recimo da sem imel po plin nastavljen na 30 sekund. Takrat nisem imel te if funkcije. Zgodilo se je da ko je bila tipka na gorilniku spuščena je mikrokrmilnik počakal 30 sekund, v nekaj ms je šel čez ostalo kodo in potem spet 30 sekund čakanja. Med tem časom ne prebere stanja na vhodih… zato tudi ni vedel da sem pritisnil tipko. Kako deluje?
+Ko je tipka spuščena je vrednost i_poPlin enaka 0. Ker 0 ni enako 1 koda do delaya ne bo prišlo. Ko pa pritisnemo tipko za varjenje program 
+    </p>
 </div>
 
 

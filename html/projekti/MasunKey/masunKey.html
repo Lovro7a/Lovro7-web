@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MašunKey | Lovro7</title>
+    <link rel="stylesheet" href="../../../style/style.css">
+</head>
+<body>
+    <!-- Navigacijski meni -->
+    <nav id="navbar">
+        <div class="header_text">Lovro7</div>
+        <div class="nav_bar">
+            <a href="../../index.html" class="menu_button">
+                <h2 class="nav_text">Domov</h2>
+            </a>
+            <a href="../../projekti.html" class="menu_button">
+                <h2 class="nav_text">Projekti</h2>
+            </a>
+            <a href="../../kontakt.html" class="menu_button">
+                <h2 class="nav_text">Kontakt</h2>
+            </a>
+            <a href="../../ostalo.html" class="menu_button">
+                <h2 class="nav_text">Ostalo</h2>
+            </a>
+            <a href="https://lovro7a.github.io/TopoTest/index.html" class="menu_button" target="_blank">
+                <h2 class="nav_text">TopoTest</h2>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Vsebina strani -->
+    <section id="kazalo">
+        <div class="menue">
+            <a href="#opis" style="text-decoration: none;">
+                <div class="link">
+                    Opis
+                </div>
+            </a>
+            <a href="#delovanje" style="text-decoration: none;">
+                <div class="link">
+                    Delovanje
+                </div>
+            </a>
+                <a href="#prevajanje" style="text-decoration: none;">
+                    <div class="link">
+                        <blockquote>Prevajanje</blockquote>
+                    </div>
+                </a>
+                <a href="#komunikacija" style="text-decoration: none;">
+                    <div class="link">
+                        <blockquote>Komunikacija</blockquote>
+                    </div>
+                </a>
+                <a href="#ponavljanje" style="text-decoration: none;">
+                    <div class="link">
+                        <blockquote>Ponavljanje</blockquote>
+                    </div>
+                </a>
+            <a href="#programi" style="text-decoration: none;">
+                <div class="link">
+                    Programi
+                </div>
+            </a>
+                <a href="#program_py" style="text-decoration: none;">
+                    <div class="link">
+                        <blockquote>Python</blockquote>
+                    </div>
+                </a>
+                <a href="#program_cpp" style="text-decoration: none;">
+                    <div class="link">
+                        <blockquote>C++</blockquote>
+                    </div>
+                </a>
+            <a href="#samogradnja" style="text-decoration: none;">
+                <div class="link">
+                    Samogradnja
+                </div>
+            </a>
+            <a href="#pcb" style="text-decoration: none;">
+                <div class="link">
+                    Pcb
+                </div>
+            </a>
+            <a href="#priloge" style="text-decoration: none;">
+                <div class="link">
+                    Priloge
+                </div>
+            </a>
+        </div>
+    </section>
+    <section id="opis">
+        <h1>OPIS</h1>
+        <p>Keyer za morsejevo abecedo na osnovi Arduino micro ali ATmega328 z GUI</p>
+        <p>Na računalniku imate aplikacijo s terminalom in 12 gumbi. V terminal vpišete bsedilo, ki ga želite poslati. Gumbi so namenjeni besedilu, ki ga pogosto pošiljate. 12. gumb omogoča ponavljanje. S "slide-barom" nastavljate razmak med ponavljanjem v sekundah. Vpišete kolikokrat hočete, da se besedilo ponovi. Lahko tudi nastavljate hitrost pošiljanja morsejeve abecede. Vse časovne dolžine se računajo iz dolžine pike. Dolžina pike se nastavlja v ms. Privzeta vrednost je 80ms.</p>
+        <p>Pri projektu smo sodelovali: Lovro7, MaliMedo, maj, kroko, airwolf, redix.</p>
+    </section>
+
+    <section id="delovanje">
+        <h2>DELOVANJE</h2>
+        <p>Računalnik skbi za pošiljanje podatkov preko serijskega protokola na Arduino. Mikrokrmilnik pa prevaja stringe, ki jih dobi v morsejevo abecedo.</p>
+        <section id="prevajanje">
+            <h3>PREVAJANJE</h3>
+            <br>
+            <br>
+            <img src="../../../style/masunKey_translate_priticol.png" width="400px">
+            <p>Ko mikrokrmilnik prebere string in ugotovi, čemu služi ga pošlje v del kode, ki ga prevede v morsejevo abecedo. Prevajalnik uporablja for loop. Ta vzame 1. znak (mesto 0) iz sringa in ga pošlje v funkcio, ki z switch case poišče pravi znak.</p>
+        <code>
+            <div>
+                string_to_converte.toLowerCase();
+            <br>
+            for (unsigned  i = 0; i < string_to_converte.length(); i++) {
+            <br>
+            write_char(string_to_converte.charAt(i));
+            <br>
+            }
+            </div>
+        </code>
+        <p>switch case ima v casu znak npr: s. Tam se kličejo funkcije dot(), line() in m_pause().</p>
+        <code>
+            case 's':
+            <br>
+            dot();
+            <br>
+            dot();
+            <br>
+            dot();
+            <br>
+            m_pause();
+            <br>
+            break;
+        </code>
+        <p>Obe funkciji za znak imata vse delay() funkcije v sebi. m_pouse() je razmak med črkami.</p>
+        <code>
+            void dot()<br>
+            {<br>
+            pinMode(PIN_MORSE, OUTPUT);<br>
+            digitalWrite(PIN_LED, 1);<br>
+            delay(DOT);<br>
+            pinMode(PIN_MORSE, INPUT);<br>
+            digitalWrite(PIN_LED, 0);<br>
+            delay(S_PAUSE);<br>
+            }<br>
+            <br>
+            void line()<br>
+            {<br>
+            pinMode(PIN_MORSE, OUTPUT);<br>
+            digitalWrite(PIN_LED, 1);<br>
+            delay(LINE);<br>
+            pinMode(PIN_MORSE, INPUT);<br>
+            digitalWrite(PIN_LED, 0);<br>
+            delay(S_PAUSE);<br>
+            }<br>
+            <br>
+            void s_pause()<br>
+            {<br>
+            delay(S_PAUSE);<br>
+            }<br>
+            <br>
+            void m_pause()<br>
+            {<br>
+            delay(M_PAUSE);<br>
+            }<br>
+            <br>
+            void l_pause()<br>
+            {<br>
+            pinMode(PIN_MORSE, INPUT);<br>
+            digitalWrite(PIN_LED, 1);<br>
+            delay(L_PAUSE);<br>
+            }<br>
+        </code>
+        </section>
+        <section id="komunikacija">
+            <h3>KOMUNIKACIJA</h3>
+            <p>Računalnik in mikrokrmilnik med sabo komunicirata po USB protokolu. Arduino micro ima ATmeega32u4, ki ima USB pine. ATmega328 jih nima, zato ima na vzju zunanji pretvornik FT232.</p>
+            <p>Sistemski ukazi za nastavitve imajo na začetku '#', ki ga morsejeva abeceda ne vsebuje. Tako mikrokrmilnik loči med suistemskimi ukazi in besedilom za prevod. Na koncu vsakega besedila je '\n', ki pove da je konec.</p>
+            <p>Računalnik najprej pošlje zahtevo za vsebino gumbov ("#start_transmition"). Mikrokrmilnik malo počaka in pošlje "btn1_content_set". To računalniku pove, da bo prejel vsebino prvega gumba. Mikrokrmilnik nato pošlje vsebino gumba brez '#'. Računalnik shrani to besedilo kot string. Ko prejme vsebino vseh 12 gumbov zapiše vsebino v gumbe.</p>
+            <code>
+                if(Serial.available() > 0){<br>
+                    input_text = Serial.readStringUntil('\n');<br>
+                    if(input_text == "#start_transmition"){<br>
+                      input_text = "";<br>
+                      string_to_converte = "";<br>
+                      DOT = 80;<br>
+                <br>
+                      digitalWrite(12, HIGH);<br>
+                      delay(100);<br>
+                      Serial.write("btn1_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn1_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn2_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn2_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn3_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn3_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn4_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn4_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn5_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn5_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn6_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn6_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn7_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn7_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn8_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn8_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn9_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn9_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn10_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn10_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn11_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn11_content);<br>
+                      Serial.write('\n');<br>
+                <br>
+                      delay(100);<br>
+                      Serial.write("btn12_content_set");<br>
+                      delay(50);<br>
+                      Serial.write(btn12_content);<br>
+                      Serial.write('\n');<br>
+                    }<br>
+                }                
+            </code>
+            <br>
+            <br>
+            <code>
+                <div style="white-space: pre;">
+if ser and ser.is_open:
+    ser.write("#start_transmition".encode("utf-8"))
+    ser.write("\n".encode("utf-8"))
+# btn1
+while True:
+    if ser.in_waiting > 0:
+        input_string = str(ser.read_all().decode('utf-8'))
+        if "btn1_content_set" in input_string:
+            while True:
+                if ser.in_waiting > 0:
+                    input_string = str(ser.read_all().decode('utf-8'))
+                    if '\n' in input_string:
+                            input_string = input_string.replace('\n','').replace('\r','')
+                            btn1_content = input_string
+                            confrm_serial_data_recive += 1
+                break
+        break
+                </div>
+            </code>
+            <br>
+            <br>
+            <br>
+            <br>
+            <p>Takrat se v oknu pojavijo gumbi, terminal in ostala vsebina.</p>
+            <br>
+            <br>
+            <br>
+            <br>
+            <img src="../../../style/masunKey_setup_priticol.png" width="400px">
+
+        </section>
+        <section id="ponavljanje">
+            <h3>PONAVLJANJE</h3>
+            <p>Funkcija ponavljanja omogoča ponavljanje pošiljaja vsebine gumba 12. Ta proces deluje v ozadju aplikacije. Za ta namen sem v kodo vključil knjižnico threading, ki ustvari threade.</p>
+            <img src="../../../style/masunKey_REPEAT_priticol.png" width="400px">
+            <br>
+            <p>Ko premaknem slide-bar se vrednost zamika sama posodobi. Ker je besedilo (#btn1_pressed") poslano takoj mora program izračunati časovni interval pošiljanja. To naredi tako, da preveri koliko znakov ima string. Formula izglea tako: 
+                <br>
+                Časovi interval = število znakov * povprecen cas posiljanja znaka * dolzina pike + razmak med ponovitvijo
+            </p>
+            <code style="white-space: pre;">
+def on_delay_change(delay_value):
+    global delay_betwin_repeat
+    delay_betwin_repeat = delay_value
+            </code>
+            <br>
+            <br>
+            <code style="white-space: pre;">
+def repeat_transmition():
+    global number_of_chars_in_repeat_string
+    interval = number_of_chars_in_repeat_string * (float(selected_speed_value) / 100) + float(delay_betwin_repeat)
+    times_to_resend_string = int(enter_n_of_string_repeat.get())
+    if times_to_resend_string > 99:
+        times_to_resend_string = 0
+        show_eror_warning("Vneseno število ponovitev presega 99")
+    global stop_repeating_string
+    stop_repeating_string = False
+    def transmit_string_to_repeat():
+        
+        for _ in range(times_to_resend_string):
+            ser.write("#btn12_pressed".encode("utf-8"))
+            ser.write('\n'.encode("utf-8"))
+            time.sleep(interval)
+            if stop_repeating_string == True:
+                break;
+
+    t = threading.Thread(target=transmit_string_to_repeat)
+                t.start()
+            </code>
+            <br>
+            <p>Ponavljanje se lahko tudi prekine. Ko pritisnete gumb "Ustavi pošiljanje gumba 12" računalnik ne bo več pošiljal mikrokrmilnika a to bo dokončal besedilo, ki ga pošilja.</p>
+            <code style="white-space: pre;">
+def stop_repeating_transmition():
+    global stop_repeating_string
+    stop_repeating_string = True
+            </code>
+        </section>
+    </section>
+
+    <section id="programi">
+        <section id="program_py">
+            <h2>PYTHON</h2>
+            <p>Ostale zanimivosti in novice s področja elektronike in programiranja.</p>
+        </section>
+    
+        <section id="program_cpp">
+            <h2>C++</h2>
+            <p>Informacije o projektu TopoTest.</p>
+        </section>
+    </section>
+
+    <section id="samogradnja">
+        <h2>SAMOGRADNJA</h2>
+        <p>Informacije o projektu TopoTest.</p>
+    </section>
+
+    <section id="pcb">
+        <h2>PCB</h2>
+        <p>Informacije o projektu TopoTest.</p>
+    </section>
+
+    <section id="priloge">
+        <h2>PRILOGE</h2>
+        <p>Vsa potrebna dokumentacija in priloge za samogradnjo.</p>
+    </section>
+
+    <script src="../../../efects.js"></script>
+</body>
+</html>

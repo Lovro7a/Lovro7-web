@@ -1,0 +1,127 @@
+/* Slog za osnovno strukturo strani */
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Navigacijski meni */
+nav {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: rgb(105, 105, 105);
+    height: 130px; /* Povečana višina menija */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+/* Naslov v meniju */
+.header_text {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 10px 0;
+    font-size: 42px;
+    color: white; /* Barva napisa */
+    background-color: rgb(105, 105, 105); /* Barva ozadja naslova */
+    width: 100%;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease; /* Dodajanje prehoda za gladko animacijo */
+}
+
+.nav_bar {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 800px;
+}
+
+.menu_button, .menu_button_selected {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.menu_button_selected {
+    background-color: rgb(70, 70, 70);
+    border-bottom: 3px solid rgb(214, 214, 214);
+}
+
+.menu_button:hover {
+    background-color: rgb(85, 85, 85);
+}
+
+.nav_text {
+    margin: 0;
+    font-size: 16px;
+    color: white;
+}
+
+/* Slog za posamezne razdelke strani */
+section {
+    padding: 50px 20px;
+    margin-top: 0px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+p {
+    color: #666;
+    /*max-width: 800px;*/
+    line-height: 1.6;
+}
+.web_select{
+    border: none;
+    width: auto;
+    text-decoration: none;
+}
+.web_select:hover{
+    padding: 10px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    width: max-content;
+    text-decoration: none;
+}
+.link{
+    text-decoration: none;
+    color: #333;
+    
+}
+.link:hover{
+    text-decoration: none;
+    background-color: rgba(105, 105, 105, 0.397);
+    width: max-content;
+    padding-right: 100%;
+    color: #333;
+}
+.menue{
+    text-decoration: none;
+    color: #333;
+    width: 100px;
+}
+blockquote{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+code{
+    border: 1px solid #333;
+    padding: 5px;
+    display: inline-block;
+    border-radius: 5px;
+    padding-top: 0px;
+    color: rgb(54, 135, 228)
+    
+}

@@ -1,82 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-<!-- Glavna stran-->
-  
   <url>
     <loc>https://lovro7a.github.io/Lovro7-web/html/index.html</loc>
     <lastmod>2024-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Dodaj ostale strani spletnega mesta tukaj -->
-  
-</urlset>
 
-<!-- PROJEKTI-->
-
-<url>
+  <url>
     <loc>https://lovro7a.github.io/Lovro7-web/html/projekti.html</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-</urlset>
-
-
-<!-- PROJEKTI-->
-
-<url>
-    <loc>https://lovro7a.github.io/Lovro7-web/html/projekti.html</loc>
-    <lastmod>2024-10-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-</urlset>
-
-
-<!-- KONTAKT-->
-
-<url>
+  <url>
     <loc>https://lovro7a.github.io/Lovro7-web/html/kontakt.html</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-</urlset>
-
-
-<!-- OSTALO-->
-
-<url>
+  <url>
     <loc>https://lovro7a.github.io/Lovro7-web/html/ostalo.html</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-</urlset>
-
-
-<!-- MASUN KEY-->
-
-<url>
+  <url>
     <loc>https://lovro7a.github.io/Lovro7-web/html/projekti/MasunKey/masunKey.html</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-</urlset>
-
-
-<!-- krmiljeje-->
-
-<url>
+  <url>
     <loc>https://lovro7a.github.io/Lovro7-web/html/projekti/krmiljenje_aparata/krmiljenje_varilnega_aparata.html</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
